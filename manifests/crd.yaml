@@ -4,22 +4,8 @@ metadata:
   annotations:
     cert-manager.io/inject-ca-from: $(CERTIFICATE_NAMESPACE)/$(CERTIFICATE_NAME)
     controller-gen.kubebuilder.io/version: v0.6.2
-  creationTimestamp: null
   name: functionmeshes.compute.functionmesh.io
 spec:
-  conversion:
-    strategy: Webhook
-    webhook:
-      clientConfig:
-        caBundle: Cg==
-        service:
-          name: webhook-service
-          namespace: system
-          path: /convert
-          port: 443
-      conversionReviewVersions:
-      - v1
-      - v1beta1
   group: compute.functionmesh.io
   names:
     kind: FunctionMesh
@@ -7710,22 +7696,8 @@ metadata:
   annotations:
     cert-manager.io/inject-ca-from: $(CERTIFICATE_NAMESPACE)/$(CERTIFICATE_NAME)
     controller-gen.kubebuilder.io/version: v0.6.2
-  creationTimestamp: null
   name: functions.compute.functionmesh.io
 spec:
-  conversion:
-    strategy: Webhook
-    webhook:
-      clientConfig:
-        caBundle: Cg==
-        service:
-          name: webhook-service
-          namespace: system
-          path: /convert
-          port: 443
-      conversionReviewVersions:
-      - v1
-      - v1beta1
   group: compute.functionmesh.io
   names:
     kind: Function
@@ -10393,22 +10365,8 @@ metadata:
   annotations:
     cert-manager.io/inject-ca-from: $(CERTIFICATE_NAMESPACE)/$(CERTIFICATE_NAME)
     controller-gen.kubebuilder.io/version: v0.6.2
-  creationTimestamp: null
   name: sinks.compute.functionmesh.io
 spec:
-  conversion:
-    strategy: Webhook
-    webhook:
-      clientConfig:
-        caBundle: Cg==
-        service:
-          name: webhook-service
-          namespace: system
-          path: /convert
-          port: 443
-      conversionReviewVersions:
-      - v1
-      - v1beta1
   group: compute.functionmesh.io
   names:
     kind: Sink
@@ -12994,22 +12952,8 @@ metadata:
   annotations:
     cert-manager.io/inject-ca-from: $(CERTIFICATE_NAMESPACE)/$(CERTIFICATE_NAME)
     controller-gen.kubebuilder.io/version: v0.6.2
-  creationTimestamp: null
   name: sources.compute.functionmesh.io
 spec:
-  conversion:
-    strategy: Webhook
-    webhook:
-      clientConfig:
-        caBundle: Cg==
-        service:
-          name: webhook-service
-          namespace: system
-          path: /convert
-          port: 443
-      conversionReviewVersions:
-      - v1
-      - v1beta1
   group: compute.functionmesh.io
   names:
     kind: Source
