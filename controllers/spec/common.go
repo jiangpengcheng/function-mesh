@@ -108,7 +108,7 @@ func MakeHeadlessServiceName(serviceName string) string {
 }
 
 func MakeStatefulSet(objectMeta *metav1.ObjectMeta, replicas *int32, container *corev1.Container,
-	volumes []corev1.Volume, labels map[string]string, policy v1alpha1.PodPolicy, authProvided bool, tlsProvided bool,
+	volumes []corev1.Volume, labels map[string]string, policy v1alpha1.PodPolicy, pulsar v1alpha1.PulsarMessaging,
 	javaRuntime *v1alpha1.JavaRuntime, pythonRuntime *v1alpha1.PythonRuntime, goRuntime *v1alpha1.GoRuntime) *appsv1.StatefulSet {
 
 	volumeMounts := generateContainerVolumeMountsForDownloader(javaRuntime, pythonRuntime, goRuntime)
@@ -130,11 +130,13 @@ func MakeStatefulSet(objectMeta *metav1.ObjectMeta, replicas *int32, container *
 
 		componentPackage = getRealComponentPackage(componentPackage)
 		downloaderContainer = &corev1.Container{
-			Name:            DownloaderName,
-			Image:           DownloaderImage,
-			Command:         getDownloadCommand(downloadPath, componentPackage, authProvided, tlsProvided),
+			Name:  DownloaderName,
+			Image: DownloaderImage,
+			Command: []string{"sh", "-c",
+				strings.Join(getDownloadCommand(downloadPath, componentPackage, pulsar.AuthSecret != "", pulsar.TLSSecret != ""), " ")},
 			VolumeMounts:    volumeMounts,
 			ImagePullPolicy: corev1.PullIfNotPresent,
+			EnvFrom:         generateContainerEnvFrom(pulsar.PulsarConfig, pulsar.AuthSecret, pulsar.TLSSecret),
 		}
 		downloaderVolume = &corev1.Volume{
 			Name: DownloaderVolume,

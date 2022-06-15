@@ -51,8 +51,8 @@ func MakeSourceService(source *v1alpha1.Source) *corev1.Service {
 func MakeSourceStatefulSet(source *v1alpha1.Source) *appsv1.StatefulSet {
 	objectMeta := MakeSourceObjectMeta(source)
 	return MakeStatefulSet(objectMeta, source.Spec.Replicas, MakeSourceContainer(source),
-		makeSourceVolumes(source), makeSourceLabels(source), source.Spec.Pod, source.Spec.Pulsar.AuthSecret != "",
-		source.Spec.Pulsar.TLSSecret != "", source.Spec.Java, source.Spec.Python, source.Spec.Golang)
+		makeSourceVolumes(source), makeSourceLabels(source), source.Spec.Pod, *source.Spec.Pulsar,
+		source.Spec.Java, source.Spec.Python, source.Spec.Golang)
 }
 
 func MakeSourceObjectMeta(source *v1alpha1.Source) *metav1.ObjectMeta {

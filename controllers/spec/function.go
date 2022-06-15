@@ -56,7 +56,7 @@ func MakeFunctionStatefulSet(function *v1alpha1.Function) *appsv1.StatefulSet {
 	objectMeta := MakeFunctionObjectMeta(function)
 	return MakeStatefulSet(objectMeta, function.Spec.Replicas,
 		MakeFunctionContainer(function), makeFunctionVolumes(function), makeFunctionLabels(function), function.Spec.Pod,
-		function.Spec.Pulsar.AuthSecret != "", function.Spec.Pulsar.TLSSecret != "", function.Spec.Java, function.Spec.Python, function.Spec.Golang)
+		*function.Spec.Pulsar, function.Spec.Java, function.Spec.Python, function.Spec.Golang)
 }
 
 func MakeFunctionObjectMeta(function *v1alpha1.Function) *metav1.ObjectMeta {

@@ -51,8 +51,8 @@ func MakeSinkService(sink *v1alpha1.Sink) *corev1.Service {
 func MakeSinkStatefulSet(sink *v1alpha1.Sink) *appsv1.StatefulSet {
 	objectMeta := MakeSinkObjectMeta(sink)
 	return MakeStatefulSet(objectMeta, sink.Spec.Replicas, MakeSinkContainer(sink),
-		makeSinkVolumes(sink), MakeSinkLabels(sink), sink.Spec.Pod, sink.Spec.Pulsar.AuthSecret != "",
-		sink.Spec.Pulsar.TLSSecret != "", sink.Spec.Java, sink.Spec.Python, sink.Spec.Golang)
+		makeSinkVolumes(sink), MakeSinkLabels(sink), sink.Spec.Pod, *sink.Spec.Pulsar,
+		sink.Spec.Java, sink.Spec.Python, sink.Spec.Golang)
 }
 
 func MakeSinkServiceName(sink *v1alpha1.Sink) string {
