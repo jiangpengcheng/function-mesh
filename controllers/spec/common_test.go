@@ -32,7 +32,7 @@ import (
 
 func TestGetDownloadCommand(t *testing.T) {
 	doTest := func(downloadPath, componentPackage string, expectedCommand []string) {
-		actualResult := getDownloadCommand(downloadPath, componentPackage, false, false, v1alpha1.CryptoSecret{})
+		actualResult := getDownloadCommand(downloadPath, componentPackage, false, false, nil)
 		assert.Equal(t, expectedCommand, actualResult)
 	}
 
@@ -255,7 +255,7 @@ func TestGeneratePodVolumes(t *testing.T) {
 		podVolumes    []corev1.Volume
 		producerConf  *v1alpha1.ProducerConfig
 		consumerConfs map[string]v1alpha1.ConsumerConfig
-		trustCert     v1alpha1.CryptoSecret
+		trustCert     v1alpha1.TLSConfig
 	}
 	tests := []struct {
 		name string
@@ -376,10 +376,7 @@ func TestGeneratePodVolumes(t *testing.T) {
 						},
 					},
 				},
-				trustCert: v1alpha1.CryptoSecret{
-					SecretName: "test-trust-secret",
-					SecretKey:  "test-trust-key",
-				},
+				trustCert: v1alpha1.NewPulsarTLSConfig(true, true, true, "test-trust-secret", "test-trust-key"),
 			},
 			want: []corev1.Volume{
 				{
@@ -439,7 +436,7 @@ func TestGenerateContainerVolumeMounts(t *testing.T) {
 		volumeMounts  []corev1.VolumeMount
 		producerConf  *v1alpha1.ProducerConfig
 		consumerConfs map[string]v1alpha1.ConsumerConfig
-		trustCert     v1alpha1.CryptoSecret
+		trustCert     v1alpha1.TLSConfig
 	}
 	tests := []struct {
 		name string
@@ -538,11 +535,7 @@ func TestGenerateContainerVolumeMounts(t *testing.T) {
 						},
 					},
 				},
-				trustCert: v1alpha1.CryptoSecret{
-					SecretName: "test-trust-secret",
-					SecretKey:  "test-trust-key",
-					AsVolume:   "/test-trust",
-				},
+				trustCert: v1alpha1.NewPulsarTLSConfig(true, true, true, "test-trust-secret", "test-trust-key"),
 			},
 			want: []corev1.VolumeMount{
 				{

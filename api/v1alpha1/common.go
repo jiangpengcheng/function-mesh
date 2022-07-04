@@ -19,6 +19,7 @@ package v1alpha1
 
 import (
 	"encoding/json"
+	"strconv"
 
 	"fmt"
 	"strings"
@@ -56,6 +57,65 @@ type PulsarMessaging struct {
 	// hostname_verification_enabled
 	// tls_trust_cert_path
 	TLSSecret string `json:"tlsSecret,omitempty"`
+
+	// To replace the TLSSecret
+	TLSConfig *PulsarTLSConfig `json:"TLSConfig,omitempty"`
+}
+
+type PulsarTLSConfig struct {
+	Enabled              bool   `json:"enabled,omitempty"`
+	AllowInsecure        bool   `json:"allowInsecure,omitempty"`
+	HostnameVerification bool   `json:"hostnameVerification,omitempty"`
+	CertSecretName       string `json:"certSecretName,omitempty"`
+	CertSecretKey        string `json:"certSecretKey,omitempty"`
+}
+
+type TLSConfig interface {
+	IsEnabled() bool
+	AllowInsecureConnection() string
+	EnableHostnameVerification() string
+	SecretName() string
+	SecretKey() string
+	HasSecretVolume() bool
+	GetMountPath() string
+}
+
+func NewPulsarTLSConfig(enabled bool, allowInsecure bool, hostnameVerification bool, secretName string, secretKey string) *PulsarTLSConfig {
+	return &PulsarTLSConfig{
+		enabled,
+		allowInsecure,
+		hostnameVerification,
+		secretName,
+		secretKey,
+	}
+}
+
+func (c *PulsarTLSConfig) IsEnabled() bool {
+	return c.Enabled
+}
+
+func (c *PulsarTLSConfig) AllowInsecureConnection() string {
+	return strconv.FormatBool(c.AllowInsecure)
+}
+
+func (c *PulsarTLSConfig) EnableHostnameVerification() string {
+	return strconv.FormatBool(c.HostnameVerification)
+}
+
+func (c *PulsarTLSConfig) SecretName() string {
+	return c.CertSecretName
+}
+
+func (c *PulsarTLSConfig) SecretKey() string {
+	return c.CertSecretKey
+}
+
+func (c *PulsarTLSConfig) HasSecretVolume() bool {
+	return c.CertSecretKey != "" && c.CertSecretKey != ""
+}
+
+func (c *PulsarTLSConfig) GetMountPath() string {
+	return "/etc/tls/pulsar-functions"
 }
 
 type PulsarStateStore struct {
@@ -230,6 +290,12 @@ type CryptoSecret struct {
 	SecretKey  string `json:"secretKey"`
 	AsVolume   string `json:"asVolume,omitempty"`
 	//AsEnv      string `json:"asEnv,omitempty"`
+}
+
+type SecretVolume struct {
+	SecretName string `json:"secretName"`
+	SecretKey  string `json:"secretKey"`
+	AsVolume   string `json:"asVolume"`
 }
 
 // SubscribePosition enum type
