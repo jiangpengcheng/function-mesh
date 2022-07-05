@@ -70,16 +70,6 @@ type PulsarTLSConfig struct {
 	CertSecretKey        string `json:"certSecretKey,omitempty"`
 }
 
-type TLSConfig interface {
-	IsEnabled() bool
-	AllowInsecureConnection() string
-	EnableHostnameVerification() string
-	SecretName() string
-	SecretKey() string
-	HasSecretVolume() bool
-	GetMountPath() string
-}
-
 func NewPulsarTLSConfig(enabled bool, allowInsecure bool, hostnameVerification bool, secretName string, secretKey string) *PulsarTLSConfig {
 	return &PulsarTLSConfig{
 		enabled,

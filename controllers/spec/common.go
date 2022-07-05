@@ -77,6 +77,16 @@ var MetricsPort = corev1.ContainerPort{
 	Protocol:      corev1.ProtocolTCP,
 }
 
+type TLSConfig interface {
+	IsEnabled() bool
+	AllowInsecureConnection() string
+	EnableHostnameVerification() string
+	SecretName() string
+	SecretKey() string
+	HasSecretVolume() bool
+	GetMountPath() string
+}
+
 func IsManaged(object metav1.Object) bool {
 	managed, exists := object.GetAnnotations()[AnnotationManaged]
 	return !exists || managed != "false"
@@ -160,7 +170,7 @@ func MakePodTemplate(container *corev1.Container, volumes []corev1.Volume,
 }
 
 func MakeJavaFunctionCommand(downloadPath, packageFile, name, clusterName, details, memory, extraDependenciesDir, uid string,
-	authProvided, tlsProvided bool, secretMaps map[string]v1alpha1.SecretRef, state *v1alpha1.Stateful, tlsConfig v1alpha1.TLSConfig) []string {
+	authProvided, tlsProvided bool, secretMaps map[string]v1alpha1.SecretRef, state *v1alpha1.Stateful, tlsConfig TLSConfig) []string {
 	processCommand := setShardIDEnvironmentVariableCommand() + " && " +
 		strings.Join(getProcessJavaRuntimeArgs(name, packageFile, clusterName, details,
 			memory, extraDependenciesDir, uid, authProvided, tlsProvided, secretMaps, state, tlsConfig), " ")
@@ -173,7 +183,7 @@ func MakeJavaFunctionCommand(downloadPath, packageFile, name, clusterName, detai
 }
 
 func MakePythonFunctionCommand(downloadPath, packageFile, name, clusterName, details, uid string,
-	authProvided, tlsProvided bool, secretMaps map[string]v1alpha1.SecretRef, state *v1alpha1.Stateful, tlsConfig v1alpha1.TLSConfig) []string {
+	authProvided, tlsProvided bool, secretMaps map[string]v1alpha1.SecretRef, state *v1alpha1.Stateful, tlsConfig TLSConfig) []string {
 	processCommand := setShardIDEnvironmentVariableCommand() + " && " +
 		strings.Join(getProcessPythonRuntimeArgs(name, packageFile, clusterName,
 			details, uid, authProvided, tlsProvided, secretMaps, state, tlsConfig), " ")
@@ -197,7 +207,7 @@ func MakeGoFunctionCommand(downloadPath, goExecFilePath string, function *v1alph
 	return []string{"sh", "-c", processCommand}
 }
 
-func getDownloadCommand(downloadPath, componentPackage string, authProvided, tlsProvided bool, tlsConfig v1alpha1.TLSConfig) []string {
+func getDownloadCommand(downloadPath, componentPackage string, authProvided, tlsProvided bool, tlsConfig TLSConfig) []string {
 	// The download path is the path that the package saved in the pulsar.
 	// By default, it's the path that the package saved in the pulsar, we can use package name
 	// to replace it for downloading packages from packages management service.
@@ -276,7 +286,7 @@ func setShardIDEnvironmentVariableCommand() string {
 }
 
 func getProcessJavaRuntimeArgs(name, packageName, clusterName, details, memory, extraDependenciesDir, uid string,
-	authProvided, tlsProvided bool, secretMaps map[string]v1alpha1.SecretRef, state *v1alpha1.Stateful, tlsConfig v1alpha1.TLSConfig) []string {
+	authProvided, tlsProvided bool, secretMaps map[string]v1alpha1.SecretRef, state *v1alpha1.Stateful, tlsConfig TLSConfig) []string {
 	classPath := "/pulsar/instances/java-instance.jar"
 	if extraDependenciesDir != "" {
 		classPath = fmt.Sprintf("%s:%s/*", classPath, extraDependenciesDir)
@@ -315,7 +325,7 @@ func getProcessJavaRuntimeArgs(name, packageName, clusterName, details, memory, 
 }
 
 func getProcessPythonRuntimeArgs(name, packageName, clusterName, details, uid string, authProvided, tlsProvided bool,
-	secretMaps map[string]v1alpha1.SecretRef, state *v1alpha1.Stateful, tlsConfig v1alpha1.TLSConfig) []string {
+	secretMaps map[string]v1alpha1.SecretRef, state *v1alpha1.Stateful, tlsConfig TLSConfig) []string {
 	args := []string{
 		"exec",
 		"python",
@@ -347,7 +357,7 @@ func getProcessPythonRuntimeArgs(name, packageName, clusterName, details, uid st
 }
 
 // This method is suitable for Java and Python runtime, not include Go runtime.
-func getSharedArgs(details, clusterName, uid string, authProvided bool, tlsProvided bool, tlsConfig v1alpha1.TLSConfig) []string {
+func getSharedArgs(details, clusterName, uid string, authProvided bool, tlsProvided bool, tlsConfig TLSConfig) []string {
 	args := []string{
 		"--instance_id",
 		"${" + EnvShardID + "}",
@@ -601,7 +611,7 @@ func generateVolumeFromCryptoSecret(secret *v1alpha1.CryptoSecret) corev1.Volume
 	}
 }
 
-func generateVolumeFromTLSConfig(tlsConfig v1alpha1.TLSConfig) corev1.Volume {
+func generateVolumeFromTLSConfig(tlsConfig TLSConfig) corev1.Volume {
 	return corev1.Volume{
 		Name: generateVolumeNameFromTLSConfig(tlsConfig),
 		VolumeSource: corev1.VolumeSource{
@@ -625,7 +635,7 @@ func generateVolumeMountFromCryptoSecret(secret *v1alpha1.CryptoSecret) corev1.V
 	}
 }
 
-func generateVolumeMountFromTLSConfig(tlsConfig v1alpha1.TLSConfig) corev1.VolumeMount {
+func generateVolumeMountFromTLSConfig(tlsConfig TLSConfig) corev1.VolumeMount {
 	return corev1.VolumeMount{
 		Name:      generateVolumeNameFromTLSConfig(tlsConfig),
 		MountPath: tlsConfig.GetMountPath(),
@@ -661,7 +671,7 @@ func generateContainerVolumeMountsFromProducerConf(conf *v1alpha1.ProducerConfig
 }
 
 func generateContainerVolumeMounts(volumeMounts []corev1.VolumeMount, producerConf *v1alpha1.ProducerConfig,
-	consumerConfs map[string]v1alpha1.ConsumerConfig, tlsConfig v1alpha1.TLSConfig) []corev1.VolumeMount {
+	consumerConfs map[string]v1alpha1.ConsumerConfig, tlsConfig TLSConfig) []corev1.VolumeMount {
 	mounts := []corev1.VolumeMount{}
 	mounts = append(mounts, volumeMounts...)
 	if tlsConfig != nil && tlsConfig.HasSecretVolume() {
@@ -673,7 +683,7 @@ func generateContainerVolumeMounts(volumeMounts []corev1.VolumeMount, producerCo
 }
 
 func generatePodVolumes(podVolumes []corev1.Volume, producerConf *v1alpha1.ProducerConfig,
-	consumerConfs map[string]v1alpha1.ConsumerConfig, tlsConfig v1alpha1.TLSConfig) []corev1.Volume {
+	consumerConfs map[string]v1alpha1.ConsumerConfig, tlsConfig TLSConfig) []corev1.Volume {
 	volumes := []corev1.Volume{}
 	volumes = append(volumes, podVolumes...)
 	if tlsConfig != nil && tlsConfig.HasSecretVolume() {
@@ -792,6 +802,6 @@ func getDecimalSIMemory(quantity *resource.Quantity) string {
 	return resource.NewQuantity(quantity.Value(), resource.DecimalSI).String()
 }
 
-func getTLSTrustCertPath(tlsVolume v1alpha1.TLSConfig, path string) string {
+func getTLSTrustCertPath(tlsVolume TLSConfig, path string) string {
 	return fmt.Sprintf("%s/%s", tlsVolume.GetMountPath(), path)
 }

@@ -379,7 +379,7 @@ func generateVolumeNameFromCryptoSecrets(c *v1alpha1.CryptoSecret) string {
 	return sanitizeVolumeName(c.SecretName + "-" + c.SecretKey)
 }
 
-func generateVolumeNameFromTLSConfig(c v1alpha1.TLSConfig) string {
+func generateVolumeNameFromTLSConfig(c TLSConfig) string {
 	return sanitizeVolumeName(c.SecretName() + "-" + c.SecretKey())
 }
 

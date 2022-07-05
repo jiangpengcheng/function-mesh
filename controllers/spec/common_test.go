@@ -255,7 +255,7 @@ func TestGeneratePodVolumes(t *testing.T) {
 		podVolumes    []corev1.Volume
 		producerConf  *v1alpha1.ProducerConfig
 		consumerConfs map[string]v1alpha1.ConsumerConfig
-		trustCert     v1alpha1.TLSConfig
+		trustCert     TLSConfig
 	}
 	tests := []struct {
 		name string
@@ -436,7 +436,7 @@ func TestGenerateContainerVolumeMounts(t *testing.T) {
 		volumeMounts  []corev1.VolumeMount
 		producerConf  *v1alpha1.ProducerConfig
 		consumerConfs map[string]v1alpha1.ConsumerConfig
-		trustCert     v1alpha1.TLSConfig
+		trustCert     TLSConfig
 	}
 	tests := []struct {
 		name string
