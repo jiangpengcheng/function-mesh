@@ -32,7 +32,8 @@ import (
 
 func TestGetDownloadCommand(t *testing.T) {
 	doTest := func(downloadPath, componentPackage string, expectedCommand []string) {
-		actualResult := getDownloadCommand(downloadPath, componentPackage, false, false, nil)
+		var tlsConfig *v1alpha1.PulsarTLSConfig
+		actualResult := getDownloadCommand(downloadPath, componentPackage, false, false, tlsConfig)
 		assert.Equal(t, expectedCommand, actualResult)
 	}
 
@@ -255,7 +256,7 @@ func TestGeneratePodVolumes(t *testing.T) {
 		podVolumes    []corev1.Volume
 		producerConf  *v1alpha1.ProducerConfig
 		consumerConfs map[string]v1alpha1.ConsumerConfig
-		trustCert     TLSConfig
+		trustCert     *v1alpha1.PulsarTLSConfig
 	}
 	tests := []struct {
 		name string
@@ -444,7 +445,7 @@ func TestGenerateContainerVolumeMounts(t *testing.T) {
 		volumeMounts  []corev1.VolumeMount
 		producerConf  *v1alpha1.ProducerConfig
 		consumerConfs map[string]v1alpha1.ConsumerConfig
-		trustCert     TLSConfig
+		trustCert     *v1alpha1.PulsarTLSConfig
 	}
 	tests := []struct {
 		name string
@@ -556,7 +557,7 @@ func TestGenerateContainerVolumeMounts(t *testing.T) {
 			want: []corev1.VolumeMount{
 				{
 					Name:      "test-trust-secret-test-trust-key",
-					MountPath: "/test-trust",
+					MountPath: "/etc/tls/pulsar-functions",
 				},
 				{
 					Name:      "test-producer-secret-test-producer-key",
