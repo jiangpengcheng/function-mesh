@@ -20,6 +20,7 @@ package spec
 import (
 	"encoding/json"
 	"fmt"
+	"reflect"
 	"strconv"
 	"strings"
 
@@ -225,7 +226,7 @@ func getDownloadCommand(downloadPath, componentPackage string, authProvided, tls
 	}
 
 	// Use traditional way
-	if tlsConfig == nil {
+	if reflect.ValueOf(tlsConfig).IsNil() {
 		if tlsProvided {
 			args = append(args, []string{
 				"--tls-allow-insecure",
@@ -390,7 +391,7 @@ func getSharedArgs(details, clusterName, uid string, authProvided bool, tlsProvi
 	}
 
 	// Use traditional way
-	if tlsConfig == nil {
+	if reflect.ValueOf(tlsConfig).IsNil() {
 		if tlsProvided {
 			args = append(args, []string{
 				"--use_tls",
@@ -674,7 +675,7 @@ func generateContainerVolumeMounts(volumeMounts []corev1.VolumeMount, producerCo
 	consumerConfs map[string]v1alpha1.ConsumerConfig, tlsConfig TLSConfig) []corev1.VolumeMount {
 	mounts := []corev1.VolumeMount{}
 	mounts = append(mounts, volumeMounts...)
-	if tlsConfig != nil && tlsConfig.HasSecretVolume() {
+	if !reflect.ValueOf(tlsConfig).IsNil() && tlsConfig.HasSecretVolume() {
 		mounts = append(mounts, generateVolumeMountFromTLSConfig(tlsConfig))
 	}
 	mounts = append(mounts, generateContainerVolumeMountsFromProducerConf(producerConf)...)
@@ -686,7 +687,7 @@ func generatePodVolumes(podVolumes []corev1.Volume, producerConf *v1alpha1.Produ
 	consumerConfs map[string]v1alpha1.ConsumerConfig, tlsConfig TLSConfig) []corev1.Volume {
 	volumes := []corev1.Volume{}
 	volumes = append(volumes, podVolumes...)
-	if tlsConfig != nil && tlsConfig.HasSecretVolume() {
+	if !reflect.ValueOf(tlsConfig).IsNil() && tlsConfig.HasSecretVolume() {
 		volumes = append(volumes, generateVolumeFromTLSConfig(tlsConfig))
 	}
 	volumes = append(volumes, generateContainerVolumesFromProducerConf(producerConf)...)

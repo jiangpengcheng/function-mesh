@@ -376,7 +376,15 @@ func TestGeneratePodVolumes(t *testing.T) {
 						},
 					},
 				},
-				trustCert: v1alpha1.NewPulsarTLSConfig(true, true, true, "test-trust-secret", "test-trust-key"),
+				trustCert: &v1alpha1.PulsarTLSConfig{
+					TLSConfig: v1alpha1.TLSConfig{
+						Enabled:              true,
+						AllowInsecure:        true,
+						HostnameVerification: true,
+						CertSecretName:       "test-trust-secret",
+						CertSecretKey:        "test-trust-key",
+					},
+				},
 			},
 			want: []corev1.Volume{
 				{
@@ -535,7 +543,15 @@ func TestGenerateContainerVolumeMounts(t *testing.T) {
 						},
 					},
 				},
-				trustCert: v1alpha1.NewPulsarTLSConfig(true, true, true, "test-trust-secret", "test-trust-key"),
+				trustCert: &v1alpha1.PulsarTLSConfig{
+					TLSConfig: v1alpha1.TLSConfig{
+						Enabled:              true,
+						AllowInsecure:        true,
+						HostnameVerification: true,
+						CertSecretName:       "test-trust-secret",
+						CertSecretKey:        "test-trust-key",
+					},
+				},
 			},
 			want: []corev1.VolumeMount{
 				{

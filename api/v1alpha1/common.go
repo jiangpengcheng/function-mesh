@@ -59,10 +59,10 @@ type PulsarMessaging struct {
 	TLSSecret string `json:"tlsSecret,omitempty"`
 
 	// To replace the TLSSecret
-	TLSConfig *PulsarTLSConfig `json:"TLSConfig,omitempty"`
+	TLSConfig *PulsarTLSConfig `json:"tlsConfig,omitempty"`
 }
 
-type PulsarTLSConfig struct {
+type TLSConfig struct {
 	Enabled              bool   `json:"enabled,omitempty"`
 	AllowInsecure        bool   `json:"allowInsecure,omitempty"`
 	HostnameVerification bool   `json:"hostnameVerification,omitempty"`
@@ -70,14 +70,8 @@ type PulsarTLSConfig struct {
 	CertSecretKey        string `json:"certSecretKey,omitempty"`
 }
 
-func NewPulsarTLSConfig(enabled bool, allowInsecure bool, hostnameVerification bool, secretName string, secretKey string) *PulsarTLSConfig {
-	return &PulsarTLSConfig{
-		enabled,
-		allowInsecure,
-		hostnameVerification,
-		secretName,
-		secretKey,
-	}
+type PulsarTLSConfig struct {
+	TLSConfig `json:",inline"`
 }
 
 func (c *PulsarTLSConfig) IsEnabled() bool {
