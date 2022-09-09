@@ -2646,6 +2646,24 @@ spec:
                         properties:
                           authSecret:
                             type: string
+                          oauth2Config:
+                            properties:
+                              audience:
+                                type: string
+                              issuerUrl:
+                                type: string
+                              keySecretKey:
+                                type: string
+                              keySecretName:
+                                type: string
+                              scope:
+                                type: string
+                            required:
+                              - audience
+                              - issuerUrl
+                              - keySecretKey
+                              - keySecretName
+                            type: object
                           pulsarConfig:
                             type: string
                           tlsConfig:
@@ -5374,6 +5392,24 @@ spec:
                         properties:
                           authSecret:
                             type: string
+                          oauth2Config:
+                            properties:
+                              audience:
+                                type: string
+                              issuerUrl:
+                                type: string
+                              keySecretKey:
+                                type: string
+                              keySecretName:
+                                type: string
+                              scope:
+                                type: string
+                            required:
+                              - audience
+                              - issuerUrl
+                              - keySecretKey
+                              - keySecretName
+                            type: object
                           pulsarConfig:
                             type: string
                           tlsConfig:
@@ -8032,6 +8068,24 @@ spec:
                         properties:
                           authSecret:
                             type: string
+                          oauth2Config:
+                            properties:
+                              audience:
+                                type: string
+                              issuerUrl:
+                                type: string
+                              keySecretKey:
+                                type: string
+                              keySecretName:
+                                type: string
+                              scope:
+                                type: string
+                            required:
+                              - audience
+                              - issuerUrl
+                              - keySecretKey
+                              - keySecretName
+                            type: object
                           pulsarConfig:
                             type: string
                           tlsConfig:
