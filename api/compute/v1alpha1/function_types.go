@@ -81,6 +81,8 @@ type FunctionSpec struct {
 	// +kubebuilder:validation:Required
 	Runtime `json:",inline"`
 
+	UseGenericRuntime bool `json:"useGenericRuntime,omitempty"`
+
 	// Image is the container image used to run function pods.
 	// default is streamnative/pulsar-functions-java-runner
 	Image string `json:"image,omitempty"`

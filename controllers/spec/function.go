@@ -140,6 +140,34 @@ func makeFunctionCommand(function *v1alpha1.Function) []string {
 		healthCheckInterval = spec.Pod.Liveness.PeriodSeconds
 	}
 
+	if spec.UseGenericRuntime {
+		var functionFileLocation string
+		var functionFile string
+		if spec.Java != nil && spec.Java.Jar != "" {
+			functionFileLocation = spec.Java.JarLocation
+			functionFile = spec.Java.Jar
+		} else if spec.Python != nil && spec.Python.Py != "" {
+			functionFileLocation = spec.Python.PyLocation
+			functionFile = spec.Python.Py
+		} else if spec.Golang != nil && spec.Golang.GoLocation != "" {
+			functionFileLocation = spec.Golang.GoLocation
+			functionFile = spec.Golang.Go
+		} else {
+			return nil
+		}
+
+		opts := []string{}
+		return MakeJavaFunctionCommand(functionFileLocation, functionFile,
+			spec.Name, spec.ClusterName,
+			generateJavaLogConfigCommand(&v1alpha1.JavaRuntime{}),
+			parseJavaLogLevel(&v1alpha1.JavaRuntime{}),
+			generateFunctionDetailsInJSON(function),
+			getDecimalSIMemory(spec.Resources.Requests.Memory()), spec.Java.ExtraDependenciesDir,
+			string(function.UID),
+			opts, spec.Pulsar.AuthSecret != "", spec.Pulsar.TLSSecret != "", function.Spec.SecretsMap,
+			function.Spec.StateConfig, function.Spec.Pulsar.TLSConfig, function.Spec.Pulsar.AuthConfig, healthCheckInterval)
+	}
+
 	if spec.Java != nil {
 		if spec.Java.Jar != "" {
 			return MakeJavaFunctionCommand(spec.Java.JarLocation, spec.Java.Jar,
