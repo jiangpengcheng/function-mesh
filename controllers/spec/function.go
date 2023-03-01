@@ -149,11 +149,12 @@ func makeFunctionCommand(function *v1alpha1.Function) []string {
 		} else if spec.Python != nil && spec.Python.Py != "" {
 			functionFileLocation = spec.Python.PyLocation
 			functionFile = spec.Python.Py
-		} else if spec.Golang != nil && spec.Golang.GoLocation != "" {
+		} else if spec.Golang != nil && spec.Golang.Go != "" {
 			functionFileLocation = spec.Golang.GoLocation
 			functionFile = spec.Golang.Go
-		} else {
-			return nil
+		} else if spec.NODE != nil && spec.NODE.NodeLocation != "" {
+			functionFileLocation = spec.NODE.NodeLocation
+			functionFile = spec.NODE.Node
 		}
 
 		opts := []string{}
@@ -162,7 +163,7 @@ func makeFunctionCommand(function *v1alpha1.Function) []string {
 			generateJavaLogConfigCommand(&v1alpha1.JavaRuntime{}),
 			parseJavaLogLevel(&v1alpha1.JavaRuntime{}),
 			generateFunctionDetailsInJSON(function),
-			getDecimalSIMemory(spec.Resources.Requests.Memory()), spec.Java.ExtraDependenciesDir,
+			getDecimalSIMemory(spec.Resources.Requests.Memory()), "",
 			string(function.UID),
 			opts, spec.Pulsar.AuthSecret != "", spec.Pulsar.TLSSecret != "", function.Spec.SecretsMap,
 			function.Spec.StateConfig, function.Spec.Pulsar.TLSConfig, function.Spec.Pulsar.AuthConfig, healthCheckInterval)

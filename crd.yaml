@@ -1,12 +1,32 @@
----
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
+    cert-manager.io/inject-ca-from: function-mesh/function-mesh-admission-webhook-server-cert
     controller-gen.kubebuilder.io/version: v0.9.2
-  creationTimestamp: null
+    meta.helm.sh/release-name: function-mesh
+    meta.helm.sh/release-namespace: function-mesh
+  creationTimestamp: "2023-02-16T07:50:17Z"
+  generation: 3
+  labels:
+    app.kubernetes.io/managed-by: Helm
   name: functions.compute.functionmesh.io
+  resourceVersion: "3101546"
+  uid: 6fe727ef-5471-4f66-ac18-b56cc4277e72
 spec:
+  conversion:
+    strategy: Webhook
+    webhook:
+      clientConfig:
+        caBundle: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUM4ekNDQWR1Z0F3SUJBZ0lRRERRTTVrc1Q1TEJ0cDlxK0UxSGNiVEFOQmdrcWhraUc5dzBCQVFzRkFEQUEKTUI0WERUSXpNREl4TmpBeU5UZ3hOVm9YRFRJek1EVXhOekF5TlRneE5Wb3dBRENDQVNJd0RRWUpLb1pJaHZjTgpBUUVCQlFBRGdnRVBBRENDQVFvQ2dnRUJBTTJMVEhPbnkzc1RjaDJaMlQwOW1RWWhuanhKaFluNWhpZWpYd09JCjRhM2E0ZEJwNkpkTGwzUGhhWkkweEhNdWU4c0hEbEU4aUFieGgvVm5wRnRUT0lCNXFNZHh2akgyTEMwRFpGY1AKTlVQc1MwRW1LNWpzdm1nM2NraXZWUWlNWThoaklhQlEwVXZiOHZTSDJxWEk0a2V5UzI0bDZuZjlTenRmR0tuRQp1MXN2blRZekNKelVWYlIzNnRzQVE1c0V0d2ducE84SmdOWUluamluZ3h5M1hwRlJ3azF0c1haMGlONjJ6TzkvClhJOTBCbTNYZ2ZIRjJhWi9jRlJLbktOK0JpT1BoVmRPWVNHSW1Nbm1rekdRVDFncFRFOEhONmVZcThiWit4NFoKT2lvWjdXTlU1WXpIK1FBNHM0WklZUjBaOGVtYzVwVERCWS9hT05jcWh3eUJVUjBDQXdFQUFhTnBNR2N3RGdZRApWUjBQQVFIL0JBUURBZ1dnTUF3R0ExVWRFd0VCL3dRQ01BQXdSd1lEVlIwUkFRSC9CRDB3TzRJNVpuVnVZM1JwCmIyNHRiV1Z6YUMxaFpHMXBjM05wYjI0dGQyVmlhRzl2YXkxelpYSjJhV05sTG1aMWJtTjBhVzl1TFcxbGMyZ3UKYzNaak1BMEdDU3FHU0liM0RRRUJDd1VBQTRJQkFRQ0lCcWJaTkV3WHc1Q0ZVeVh3TFBzcHZ4NkNNZkFYSDJqawprU2xWTGFuZGNCaTVsYUIyanBVRFRuL1JON3hiZitieHBVRDd6VCtLVytoN09NRWl6Z2FZL0p1SjIyNmpEMzBYCmVhMlpPeElmUmI5SSsvTkhLR1paWms4U3NRMzhWVHArdytFclk4V3h5alkyYXZwQUpveHZGemUrOTYwK0J1d1oKb1p1TzlpVHkxaWVGZUlXb2xpVmNrVUlBbzQ0U0orRUpyQzUrbWZIM2p5UHFYME9OeGVhSnlBRTg5Z29vR2lRagpjUWhpZE1tYjJrWFJRYmFIWExDQ2hCNmlHRHZGUC9WKzdjaHp2dE5RcXUvNWZtSHU0TXFOUnpJRG9hYjlENHV1ClRMQWJzNmJ1bmU4a0Ezb0x0WlBObVdKcG9NRWUyOFQwWEJnVnAzVG9DYll0RlM0cXhHOFUKLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo=
+        service:
+          name: function-mesh-admission-webhook-service
+          namespace: function-mesh
+          path: /convert
+          port: 443
+      conversionReviewVersions:
+      - v1
+      - v1beta1
   group: compute.functionmesh.io
   names:
     kind: Function
@@ -3353,3 +3373,22 @@ spec:
         specReplicasPath: .spec.replicas
         statusReplicasPath: .status.replicas
       status: {}
+status:
+  acceptedNames:
+    kind: Function
+    listKind: FunctionList
+    plural: functions
+    singular: function
+  conditions:
+  - lastTransitionTime: "2023-02-16T07:50:17Z"
+    message: no conflicts found
+    reason: NoConflicts
+    status: "True"
+    type: NamesAccepted
+  - lastTransitionTime: "2023-02-16T07:50:17Z"
+    message: the initial names have been accepted
+    reason: InitialNamesAccepted
+    status: "True"
+    type: Established
+  storedVersions:
+  - v1alpha1

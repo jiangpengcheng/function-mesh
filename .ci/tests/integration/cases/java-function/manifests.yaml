@@ -10,6 +10,7 @@ spec:
   maxPendingAsyncRequests: 1000
   replicas: 1
   maxReplicas: 5
+  subscriptionName: "test-sub"
   logTopic: persistent://public/default/logging-function-logs
   input:
     topics:

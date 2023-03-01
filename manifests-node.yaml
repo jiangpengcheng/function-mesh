@@ -1,0 +1,49 @@
+apiVersion: compute.functionmesh.io/v1alpha1
+kind: Function
+metadata:
+  name: node-function-download-generic-sample
+  namespace: default
+spec:
+  image: jiangpch/generic-runtime-node:v0.11.0
+  className: process
+  forwardSourceMessageProperty: true
+  maxPendingAsyncRequests: 1000
+  replicas: 1
+  maxReplicas: 1
+  logTopic: persistent://public/default/node-generic-function-logs2
+  input:
+    topics:
+    - persistent://public/default/input2-download-generic-node-topic
+    typeClassName: string
+  output:
+    topic: persistent://public/default/output2-download-generic-node-topic
+    typeClassName: string
+  resources:
+    requests:
+      cpu: 50m
+      memory: 1G
+    limits:
+      cpu: "0.2"
+      memory: 1.1G
+  pulsar:
+    pulsarConfig: "test-node-pulsar"
+    tlsConfig:
+      enabled: false
+      allowInsecure: true
+      hostnameVerification: true
+    #authConfig: "test-auth"
+  node:
+    node: process.js
+    nodeLocation: function://public/default/test-node-function
+  # to be delete & use admission hook
+  clusterName: test
+  autoAck: true
+  useGenericRuntime: true
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: test-node-pulsar
+data:
+  webServiceURL: http://sn-platform-pulsar-broker.sn.svc.cluster.local:8080
+  brokerServiceURL: pulsar://sn-platform-pulsar-broker.sn.svc.cluster.local:6650

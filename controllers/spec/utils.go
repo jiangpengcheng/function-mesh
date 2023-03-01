@@ -40,6 +40,8 @@ func convertFunctionDetails(function *v1alpha1.Function) *proto.FunctionDetails 
 		runtime = proto.FunctionDetails_PYTHON
 	} else if function.Spec.Golang != nil {
 		runtime = proto.FunctionDetails_GO
+	} else if function.Spec.NODE != nil {
+		runtime = proto.FunctionDetails_NODEJS
 	}
 	fd := &proto.FunctionDetails{
 		Tenant:               function.Spec.Tenant,

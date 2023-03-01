@@ -22,7 +22,7 @@ set -ex
 BINDIR=`dirname "$0"`
 PULSAR_HOME=`cd ${BINDIR}/..;pwd`
 
-NAMESPACE=default
+NAMESPACE=sn
 CLUSTER=sn-platform
 
 case ${1} in

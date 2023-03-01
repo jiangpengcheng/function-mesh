@@ -152,6 +152,15 @@ spec:
                 type: string
               namespace:
                 type: string
+              node:
+                properties:
+                  node:
+                    type: string
+                  nodeLocation:
+                    type: string
+                required:
+                - node
+                type: object
               output:
                 properties:
                   customSchemaSinks:

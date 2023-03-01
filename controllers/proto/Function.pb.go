@@ -240,6 +240,7 @@ const (
 	FunctionDetails_JAVA   FunctionDetails_Runtime = 0
 	FunctionDetails_PYTHON FunctionDetails_Runtime = 1
 	FunctionDetails_GO     FunctionDetails_Runtime = 3
+	FunctionDetails_NODEJS FunctionDetails_Runtime = 4
 )
 
 // Enum value maps for FunctionDetails_Runtime.
@@ -248,11 +249,13 @@ var (
 		0: "JAVA",
 		1: "PYTHON",
 		3: "GO",
+		4: "NODEJS",
 	}
 	FunctionDetails_Runtime_value = map[string]int32{
 		"JAVA":   0,
 		"PYTHON": 1,
 		"GO":     3,
+		"NODEJS": 4,
 	}
 )
 

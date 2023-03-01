@@ -233,6 +233,7 @@ type Runtime struct {
 	Java   *JavaRuntime   `json:"java,omitempty"`
 	Python *PythonRuntime `json:"python,omitempty"`
 	Golang *GoRuntime     `json:"golang,omitempty"`
+	NODE   *NodeRuntime   `json:"node,omitempty"`
 }
 
 // JavaRuntime contains the java runtime configs
@@ -262,6 +263,12 @@ type GoRuntime struct {
 	Go         string            `json:"go"`
 	GoLocation string            `json:"goLocation,omitempty"`
 	Log        *RuntimeLogConfig `json:"log,omitempty"`
+}
+
+type NodeRuntime struct {
+	// +kubebuilder:validation:Required
+	Node         string `json:"node"`
+	NodeLocation string `json:"nodeLocation,omitempty"`
 }
 
 type SecretRef struct {

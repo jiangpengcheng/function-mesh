@@ -245,6 +245,15 @@ spec:
                 negativeAckRedeliveryDelayMs:
                   format: int32
                   type: integer
+                node:
+                  properties:
+                    node:
+                      type: string
+                    nodeLocation:
+                      type: string
+                  required:
+                    - node
+                  type: object
                 pod:
                   properties:
                     affinity:

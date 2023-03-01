@@ -252,6 +252,15 @@ spec:
                   type: string
                 namespace:
                   type: string
+                node:
+                  properties:
+                    node:
+                      type: string
+                    nodeLocation:
+                      type: string
+                  required:
+                    - node
+                  type: object
                 output:
                   properties:
                     customSchemaSinks:
@@ -3277,6 +3286,8 @@ spec:
                 timeout:
                   format: int32
                   type: integer
+                useGenericRuntime:
+                  type: boolean
                 volumeMounts:
                   items:
                     properties:

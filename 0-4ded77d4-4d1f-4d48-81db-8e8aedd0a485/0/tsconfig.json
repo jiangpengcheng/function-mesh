@@ -1,0 +1,1 @@
+{"files":["process.ts","exec__.ts"],"compilerOptions":{"lib":["es2018","dom"],"inlineSourceMap":true,"outDir":"."}}

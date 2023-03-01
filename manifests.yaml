@@ -1,22 +1,23 @@
 apiVersion: compute.functionmesh.io/v1alpha1
 kind: Function
 metadata:
-  name: function-download-sample
+  name: py-function-download-generic-sample
   namespace: default
 spec:
-  className: org.apache.pulsar.functions.api.examples.ExclamationFunction
+  image: jiangpch/generic-runtime-python:v0.9.0
+  className: exclamation_function.ExclamationFunction
   forwardSourceMessageProperty: true
   maxPendingAsyncRequests: 1000
   replicas: 1
-  maxReplicas: 5
-  logTopic: persistent://public/default/logging-function-logs
+  maxReplicas: 1
+  logTopic: persistent://public/default/py-generic-function-logs
   input:
     topics:
-    - persistent://public/default/input-download-java-topic
-    typeClassName: java.lang.String
+    - persistent://public/default/input-download-generic-python-topic
+    typeClassName: string
   output:
-    topic: persistent://public/default/output-download-java-topic
-    typeClassName: java.lang.String
+    topic: persistent://public/default/output-download-generic-python-topic
+    typeClassName: string
   resources:
     requests:
       cpu: 50m
@@ -24,34 +25,25 @@ spec:
     limits:
       cpu: "0.2"
       memory: 1.1G
-  # each secret will be loaded ad an env variable from the `path` secret with the `key` in that secret in the name of `name`
-  secretsMap:
-    "name":
-        path: "test-secret"
-        key: "username"
-    "pwd":
-        path: "test-secret"
-        key: "password"
   pulsar:
-    pulsarConfig: "test-pulsar"
+    pulsarConfig: "test-py-pulsar"
     tlsConfig:
       enabled: false
-      allowInsecure: false
+      allowInsecure: true
       hostnameVerification: true
-      certSecretName: sn-platform-tls-broker
-      certSecretKey: ""
     #authConfig: "test-auth"
-  java:
-    jar: pulsar-functions-api-examples.jar
-    jarLocation: function://public/default/test-java-function
+  python:
+    py: exclamation_function.py
+    pyLocation: function://public/default/test-py-function
   # to be delete & use admission hook
   clusterName: test
   autoAck: true
+  useGenericRuntime: true
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: test-pulsar
+  name: test-py-pulsar
 data:
   webServiceURL: http://sn-platform-pulsar-broker.sn.svc.cluster.local:8080
   brokerServiceURL: pulsar://sn-platform-pulsar-broker.sn.svc.cluster.local:6650
@@ -74,5 +66,5 @@ data:
   password: MWYyZDFlMmU2N2Rm
 kind: Secret
 metadata:
-  name: test-secret
+  name: test-py-secret
 type: Opaque
