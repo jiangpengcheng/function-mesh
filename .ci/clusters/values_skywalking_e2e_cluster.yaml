@@ -35,7 +35,7 @@ components:
 ## disable monitoring stack
 monitoring:
   # monitoring - prometheus
-  prometheus: false
+  prometheus: true
   # monitoring - grafana
   grafana: false
   # monitoring - node_exporter
@@ -63,15 +63,17 @@ zookeeper:
       cpu: 50m
 
 bookkeeper:
-  replicaCount: 0
+  replicaCount: 1
   metadata:
     image:
       repository: streamnative/pulsar-all
       tag: 2.9.2.23
   resources:
     requests:
-      memory: 256Mi
+      memory: 1348Mi
       cpu: 50m
+    limits:
+      memory: 1348Mi
   configData:
     PULSAR_PREFIX_autoRecoveryDaemonEnabled: "false"
     PULSAR_PREFIX_dlog.bkcEnsembleSize: "1"
@@ -79,13 +81,13 @@ bookkeeper:
     PULSAR_PREFIX_dlog.bkcAckQuorumSize: "1"
     # `BOOKIE_MEM` is used for `bookie shell`
     BOOKIE_MEM: >
-      -Xms128m
-      -Xmx256m
+      -Xms1024m
+      -Xmx1024m
       -XX:MaxDirectMemorySize=256m
     # we use `bin/pulsar` for starting bookie daemons
     PULSAR_MEM: >
-      -Xms128m
-      -Xmx256m
+      -Xms1024m
+      -Xmx1024m
       -XX:MaxDirectMemorySize=256m
     PULSAR_GC: >
       -XX:+UseG1GC
@@ -110,6 +112,8 @@ pulsar_metadata:
 broker:
   replicaCount: 1
   configData:
+    PULSAR_MEM: >
+      -Xms1024m -Xmx1024m -XX:MaxDirectMemorySize=1024m
     ## Enable `autoSkipNonRecoverableData` since bookkeeper is running
     ## without persistence
     autoSkipNonRecoverableData: "true"
@@ -121,8 +125,10 @@ broker:
     PULSAR_PREFIX_enablePackagesManagement: "true"
   resources:
     requests:
-      memory: 256Mi
+      memory: 1348Mi
       cpu: 50m
+    limits:
+      memory: 1348Mi
 
 functions:
   functionState: true

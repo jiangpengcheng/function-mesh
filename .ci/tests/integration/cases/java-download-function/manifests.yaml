@@ -8,8 +8,6 @@ spec:
   forwardSourceMessageProperty: true
   maxPendingAsyncRequests: 1000
   replicas: 1
-  maxReplicas: 5
-  logTopic: persistent://public/default/logging-function-logs
   input:
     topics:
     - persistent://public/default/input-download-java-topic
@@ -19,11 +17,11 @@ spec:
     typeClassName: java.lang.String
   resources:
     requests:
-      cpu: 50m
-      memory: 1G
+      cpu: 1000m
+      memory: 2G
     limits:
-      cpu: "0.2"
-      memory: 1.1G
+      cpu: 1000m
+      memory: 2G
   # each secret will be loaded ad an env variable from the `path` secret with the `key` in that secret in the name of `name`
   secretsMap:
     "name":
@@ -53,8 +51,8 @@ kind: ConfigMap
 metadata:
   name: test-pulsar
 data:
-  webServiceURL: http://sn-platform-pulsar-broker.sn.svc.cluster.local:8080
-  brokerServiceURL: pulsar://sn-platform-pulsar-broker.sn.svc.cluster.local:6650
+  webServiceURL: http://sn-platform-pulsar-broker.default.svc.cluster.local:8080
+  brokerServiceURL: pulsar://sn-platform-pulsar-broker.default.svc.cluster.local:6650
 #---
 #apiVersion: v1
 #kind: ConfigMap
