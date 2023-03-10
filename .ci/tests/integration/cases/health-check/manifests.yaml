@@ -2,7 +2,6 @@ apiVersion: compute.functionmesh.io/v1alpha1
 kind: Function
 metadata:
   name: health-check-sample
-  namespace: default
 spec:
   image: streamnative/pulsar-functions-java-sample:2.9.2.23
   className: org.apache.pulsar.functions.api.examples.ExclamationFunction
@@ -10,9 +9,10 @@ spec:
   maxPendingAsyncRequests: 1000
   replicas: 1
   maxReplicas: 5
-  liveness:
-    initialDelaySeconds: 10
-    periodSeconds: 10
+  pod:
+    liveness:
+      initialDelaySeconds: 10
+      periodSeconds: 10
   logTopic: persistent://public/default/logging-function-logs
   input:
     topics:

@@ -8,8 +8,6 @@ spec:
   forwardSourceMessageProperty: true
   maxPendingAsyncRequests: 1000
   replicas: 1
-  maxReplicas: 1
-  logTopic: persistent://public/default/py-function-logs
   input:
     topics:
     - persistent://public/default/input-download-python-topic
@@ -17,19 +15,12 @@ spec:
     topic: persistent://public/default/output-download-python-topic
   resources:
     requests:
-      cpu: 50m
-      memory: 1G
+      cpu: 1000m
+      memory: 0.5G
     limits:
-      cpu: "0.2"
-      memory: 1.1G
+      cpu: 1000m
+      memory: 0.5G
   # each secret will be loaded ad an env variable from the `path` secret with the `key` in that secret in the name of `name`
-  secretsMap:
-    "name":
-        path: "test-py-secret"
-        key: "username"
-    "pwd":
-        path: "test-py-secret"
-        key: "password"
   pulsar:
     pulsarConfig: "test-py-pulsar"
     tlsConfig:
@@ -63,12 +54,3 @@ data:
 #  useTls: "true"
 #  tlsAllowInsecureConnection: "false"
 #  tlsHostnameVerificationEnable: "true"
----
-apiVersion: v1
-data:
-  username: YWRtaW4=
-  password: MWYyZDFlMmU2N2Rm
-kind: Secret
-metadata:
-  name: test-py-secret
-type: Opaque

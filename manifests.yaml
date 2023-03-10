@@ -8,7 +8,7 @@ spec:
     env:
     - name: "UNIT_PARALLELISM"
       value: "2"
-  image: jiangpch/generic-runtime-python:v0.22.0
+  image: jiangpch/generic-runtime-python:v0.26.0
   className: exclamation_function.ExclamationFunction
   forwardSourceMessageProperty: true
   maxPendingAsyncRequests: 1000
@@ -25,10 +25,10 @@ spec:
   resources:
     requests:
       cpu: 1000m
-      memory: 2G
+      memory: 0.5G
     limits:
       cpu: 1000m
-      memory: 2G
+      memory: 0.5G
   pulsar:
     pulsarConfig: "test-py-pulsar"
     tlsConfig:

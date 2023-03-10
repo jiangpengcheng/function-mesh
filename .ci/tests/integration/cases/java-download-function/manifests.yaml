@@ -17,19 +17,12 @@ spec:
     typeClassName: java.lang.String
   resources:
     requests:
-      cpu: 1000m
-      memory: 2G
+      cpu: 500m
+      memory: 0.5G
     limits:
-      cpu: 1000m
-      memory: 2G
+      cpu: 500m
+      memory: 0.5G
   # each secret will be loaded ad an env variable from the `path` secret with the `key` in that secret in the name of `name`
-  secretsMap:
-    "name":
-        path: "test-secret"
-        key: "username"
-    "pwd":
-        path: "test-secret"
-        key: "password"
   pulsar:
     pulsarConfig: "test-pulsar"
     tlsConfig:
@@ -65,12 +58,3 @@ data:
 #  useTls: "true"
 #  tlsAllowInsecureConnection: "false"
 #  tlsHostnameVerificationEnable: "true"
----
-apiVersion: v1
-data:
-  username: YWRtaW4=
-  password: MWYyZDFlMmU2N2Rm
-kind: Secret
-metadata:
-  name: test-secret
-type: Opaque
