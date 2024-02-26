@@ -1,0 +1,75 @@
+name: Precommit - Integration Tests
+on:
+  pull_request:
+    branches:
+      - '*'
+    paths-ignore:
+      - 'docs/**'
+      - 'README.md'
+      - 'CHANGELOG.md'
+      - 'PROJECT'
+      - 'LICENSE'
+      - 'mesh-worker-service/README.md'
+      - 'tools/README.md'
+permissions: read-all
+jobs:
+  integration:
+    runs-on: ubuntu-latest
+    env:
+      AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+    timeout-minutes: 80
+    strategy:
+      matrix:
+        case:
+          - name: integration test
+            e2e: ".ci/tests/integration/e2e.yaml"
+          - name: integration test with tls
+            e2e: ".ci/tests/integration/e2e_with_tls.yaml"
+          - name: integration test with oauth2
+            e2e: ".ci/tests/integration-oauth2/e2e.yaml"
+          - name: integration test with downloader
+            e2e: ".ci/tests/integration-oauth2/e2e_with_downloader.yaml"
+    steps:
+      - name: clean disk
+        run: |
+          sudo swapoff -a
+          sudo rm -rf /swapfile /usr/share/dotnet /usr/local/lib/android /opt/ghc
+          sudo apt clean
+          docker rmi $(docker images -q) -f
+          df -h
+
+      # the runner machine has a disk /dev/sdb1 which mounted to /mnt, and it has more free disk than /dev/sda1.
+      # we can use it to save docker's data to avoid bookie used too much disk.
+      - name: change docker data dir
+        run: |
+          sudo service docker stop
+          echo '{ "exec-opts": ["native.cgroupdriver=cgroupfs"], "cgroup-parent": "/actions_job", "data-root": "/mnt/docker" }' | sudo tee /etc/docker/daemon.json
+          sudo service docker start
+
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          repository: ${{github.event.pull_request.head.repo.full_name}}
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Setup ssh access to build runner VM
+        uses: ./.github/actions/ssh-access
+        with:
+          limit-access-to-actor: true
+
+      - uses: apache/skywalking-infra-e2e@v1.2.0
+        with:
+          e2e-file: ${{matrix.case.e2e}}
+
+      - name: Wait for ssh connection when build fails
+        uses: ./.github/actions/ssh-access
+        if: failure()
+        continue-on-error: true
+        with:
+          action: wait
+
+      - name: Cleanup
+        if: ${{ failure() }}
+        run: e2e cleanup -c ${{matrix.case.e2e}}
